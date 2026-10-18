@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dev World Map: Interactive Countries & Marine Explorer</title>
+  <meta name="description" content="Dev World Map - Explore sovereign nations, UN member states, observer states, world oceans, and saline water bodies with interactive flashcards and live maps.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Leaflet CSS for Map Visuals -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+
+  <!-- App Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!-- ============================================== -->
+  <!-- WELCOME PAGE (FLORAL CORNERS, GIRL POP-UP, LET'S EXPLORE) -->
+  <!-- ============================================== -->
+  <section id="welcome-screen" class="welcome-screen" aria-label="Welcome to Dev World Map">
+    <div class="welcome-ambient-bg" aria-hidden="true"></div>
+
+    <div class="welcome-card-wrapper" id="welcome-card-wrapper">
+      <!-- 4 Floral Corner Ornaments from User Sheet -->
+      <img src="assets/floral-tl.png" alt="" class="floral-corner floral-corner-tl" aria-hidden="true">
+      <img src="assets/floral-tr.png" alt="" class="floral-corner floral-corner-tr" aria-hidden="true">
+      <img src="assets/floral-bl.png" alt="" class="floral-corner floral-corner-bl" aria-hidden="true">
+      <img src="assets/floral-br.png" alt="" class="floral-corner floral-corner-br" aria-hidden="true">
+
+      <div class="welcome-content-grid">
+        <!-- Explorer Girl Column with Pop-Up Animation -->
+        <div class="welcome-girl-col">
+          <div class="girl-stage">
+            <div class="girl-glow-backdrop" aria-hidden="true"></div>
+            <div class="girl-sparkle s1" aria-hidden="true">✨</div>
+            <div class="girl-sparkle s2" aria-hidden="true">⭐</div>
+            <img src="assets/explorer-girl.png" alt="Happy explorer girl holding a world map" class="welcome-girl-img" id="welcome-girl-img">
+            <div class="girl-badge-tag">
+              <span class="badge-icon">🧭</span>
+              <span>Global Cartographer</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Welcome Friends & Let's Explore Action Column -->
+        <div class="welcome-text-col">
+          <div class="welcome-edition-badge">
+            <span class="badge-dot"></span>
+            <span>DEV WORLD MAP • 2026 GEOSPATIAL ATLAS</span>
+          </div>
+
+          <h1 class="welcome-heading">
+            <span class="welcome-text-gradient">Welcome Friends!</span>
+          </h1>
+
+          <p class="welcome-intro">
+            Embark on an interactive geospatial journey across planet Earth. 
+            Discover all <strong>205 sovereign nations and territories</strong>, 
+            United Nations protocol divisions, marine hydrosphere basins, 
+            3D flashcards with calling codes, and live interactive cartography.
+          </p>
+
+          <!-- 4 Interactive Overview Feature Highlights -->
+          <div class="welcome-highlights">
+            <div class="welcome-hl-item">
+              <span class="hl-icon">🇺🇳</span>
+              <div class="hl-body">
+                <strong>193 UN Members + 2 Observers</strong>
+                <span>Sovereign capitals, currencies & years</span>
+              </div>
+            </div>
+
+            <div class="welcome-hl-item">
+              <span class="hl-icon">🚩</span>
+              <div class="hl-body">
+                <strong>10 Limited Recognition States</strong>
+                <span>De facto self-governing territories</span>
+              </div>
+            </div>
+
+            <div class="welcome-hl-item">
+              <span class="hl-icon">🌊</span>
+              <div class="hl-body">
+                <strong>5 Oceans & 18+ Salt Seas</strong>
+                <span>Salinity gradients & marine geography</span>
+              </div>
+            </div>
+
+            <div class="welcome-hl-item">
+              <span class="hl-icon">🎴</span>
+              <div class="hl-body">
+                <strong>3D Flashcards & Calling Codes</strong>
+                <span>+91 phone codes, .in TLDs & trivia quiz</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Let's Explore CTA Button -->
+          <div class="welcome-action-area">
+            <button type="button" class="btn-lets-explore" id="btn-lets-explore" title="Enter Dev World Map">
+              <span class="btn-explore-icon">🧭</span>
+              <span class="btn-explore-text">Let's Explore</span>
+              <span class="btn-explore-arrow">➔</span>
+            </button>
+            <div class="welcome-footnote">
+              <span>⚡ Fast & interactive</span> • <span>🌙 Dark/Light/System theme</span> • <span>🗺️ Live Leaflet visuals</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================== -->
+  <!-- MAIN APPLICATION (MAINCOURSE PAGE) -->
+  <!-- ============================================== -->
+  <div id="main-app" class="main-app-container">
+    <!-- HEADER & HERO SECTION -->
+    <header class="app-header">
+      <div class="header-container">
+        <div class="brand">
+          <div class="brand-logo">
+            <span class="logo-globe">🗺️</span>
+            <div class="logo-pulse"></div>
+          </div>
+          <div class="brand-text">
+            <h1>Dev World Map</h1>
+            <p class="brand-subtitle">Interactive Geopolitical, Marine & Spatial Explorer</p>
+          </div>
+        </div>
+
+        <!-- HEADER CONTROLS (Return Welcome & Theme Selector) -->
+        <div class="header-actions-wrapper">
+          <button type="button" class="btn-nav-welcome" id="btn-nav-welcome" title="Return to Welcome Screen">
+            <span class="welcome-btn-icon">👋</span>
+            <span class="welcome-btn-text">Welcome</span>
+          </button>
+
+          <div class="theme-switcher-wrapper">
+            <div class="theme-switcher" role="radiogroup" aria-label="Theme selection">
+              <button type="button" class="theme-btn" data-theme-choice="light" id="theme-btn-light" title="Switch to Light Theme">
+                <span class="theme-icon">☀️</span>
+                <span class="theme-text">Light</span>
+              </button>
+              <button type="button" class="theme-btn" data-theme-choice="dark" id="theme-btn-dark" title="Switch to Pure Black Dark Theme">
+                <span class="theme-icon">🌙</span>
+                <span class="theme-text">Dark</span>
+              </button>
+              <button type="button" class="theme-btn active" data-theme-choice="system" id="theme-btn-system" title="Switch to System Theme">
+                <span class="theme-icon">💻</span>
+                <span class="theme-text">System</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <!-- GEOPOLITICAL STATS DASHBOARD (Interactive Quick Filters) -->
+    <div class="stats-ticker-container">
+      <div class="stats-ticker">
+        <button type="button" class="stat-pill highlight-pill" id="stat-total-countries" title="Click to view all 205 countries and territories">
+          <span class="stat-icon">🌐</span>
+          <div class="stat-meta">
+            <span class="stat-num" id="count-total">205</span>
+            <span class="stat-label">Total Countries & Territories</span>
+          </div>
+        </button>
+
+        <button type="button" class="stat-pill un-pill" id="stat-un-members" title="Click to filter to 193 UN Member States">
+          <span class="stat-icon">🇺🇳</span>
+          <div class="stat-meta">
+            <span class="stat-num" id="count-un">193</span>
+            <span class="stat-label">UN Member States</span>
+          </div>
+        </button>
+
+        <button type="button" class="stat-pill observer-pill" id="stat-un-observers" title="Click to filter to 2 UN Observer States (Vatican & Palestine)">
+          <span class="stat-icon">🕊️</span>
+          <div class="stat-meta">
+            <span class="stat-num" id="count-observers">2</span>
+            <span class="stat-label">UN Observer States</span>
+          </div>
+        </button>
+
+        <button type="button" class="stat-pill defacto-pill" id="stat-de-facto" title="Click to filter to 10 Limited / De Facto Recognized States">
+          <span class="stat-icon">🚩</span>
+          <div class="stat-meta">
+            <span class="stat-num" id="count-limited">10</span>
+            <span class="stat-label">Limited / De Facto</span>
+          </div>
+        </button>
+
+        <button type="button" class="stat-pill oceans-pill" id="stat-oceans-count" title="Click to explore the 5 World Oceans">
+          <span class="stat-icon">🌊</span>
+          <div class="stat-meta">
+            <span class="stat-num">5</span>
+            <span class="stat-label">World Oceans</span>
+          </div>
+        </button>
+
+        <button type="button" class="stat-pill seas-pill" id="stat-seas-count" title="Click to explore 18+ Marginal and Salt Seas">
+          <span class="stat-icon">🧭</span>
+          <div class="stat-meta">
+            <span class="stat-num">18+</span>
+            <span class="stat-label">Marginal & Salt Seas</span>
+          </div>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN NAVIGATION TABS (Countries vs Interactive Map vs Oceans vs Quiz) -->
+  <nav class="main-nav-tabs">
+    <div class="tabs-container">
+      <button class="nav-tab active" data-view="countries" id="tab-countries">
+        <span class="tab-icon">🎴</span>
+        <span class="tab-title">Countries Flashcards</span>
+        <span class="tab-badge" id="tab-countries-badge">205</span>
+      </button>
+
+      <button class="nav-tab" data-view="map" id="tab-map">
+        <span class="tab-icon">🗺️</span>
+        <span class="tab-title">Interactive World Map</span>
+        <span class="tab-badge special">Live</span>
+      </button>
+
+      <button class="nav-tab" data-view="waterbodies" id="tab-waterbodies">
+        <span class="tab-icon">🌊</span>
+        <span class="tab-title">Oceans & Saltwater Bodies</span>
+        <span class="tab-badge" id="tab-water-badge">23</span>
+      </button>
+
+      <button class="nav-tab" data-view="quiz" id="tab-quiz">
+        <span class="tab-icon">🎯</span>
+        <span class="tab-title">Study & Quiz Mode</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- CONTENT SECTION -->
+  <main class="main-content">
+    
+    <!-- VIEW 1: COUNTRIES EXPLORER -->
+    <section id="view-countries" class="view-panel active">
+      <!-- TOP CONTINENT BAR (BUTTON UI FORMAT) -->
+      <div class="continent-bar-wrapper">
+        <div class="continent-bar-label">
+          <span>Filter by Continent:</span>
+        </div>
+        <div class="continent-buttons" id="continent-buttons" role="tablist">
+          <button class="continent-btn active" data-continent="All">
+            <span class="c-icon">🌍</span>
+            <span class="c-name">All Continents</span>
+            <span class="c-badge" id="badge-all">205</span>
+          </button>
+          <button class="continent-btn" data-continent="Africa">
+            <span class="c-icon">🦁</span>
+            <span class="c-name">Africa</span>
+            <span class="c-badge" id="badge-africa">56</span>
+          </button>
+          <button class="continent-btn" data-continent="Asia">
+            <span class="c-icon">🏯</span>
+            <span class="c-name">Asia</span>
+            <span class="c-badge" id="badge-asia">49</span>
+          </button>
+          <button class="continent-btn" data-continent="Europe">
+            <span class="c-icon">🏰</span>
+            <span class="c-name">Europe</span>
+            <span class="c-badge" id="badge-europe">49</span>
+          </button>
+          <button class="continent-btn" data-continent="North America">
+            <span class="c-icon">🦅</span>
+            <span class="c-name">North America</span>
+            <span class="c-badge" id="badge-namerica">23</span>
+          </button>
+          <button class="continent-btn" data-continent="South America">
+            <span class="c-icon">🌿</span>
+            <span class="c-name">South America</span>
+            <span class="c-badge" id="badge-samerica">12</span>
+          </button>
+          <button class="continent-btn" data-continent="Oceania">
+            <span class="c-icon">🦘</span>
+            <span class="c-name">Oceania</span>
+            <span class="c-badge" id="badge-oceania">16</span>
+          </button>
+          <button class="continent-btn" data-continent="Antarctica">
+            <span class="c-icon">❄️</span>
+            <span class="c-name">Antarctica</span>
+            <span class="c-badge" id="badge-antarctica">Treaty</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- FILTER CONTROLS TOOLBAR -->
+      <div class="controls-toolbar">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="country-search" placeholder="Search country, capital, currency, location..." autocomplete="off">
+          <button type="button" id="search-clear" class="search-clear-btn" title="Clear search">✕</button>
+        </div>
+
+        <div class="filter-pills-group" id="status-filters">
+          <button class="status-pill active" data-status="all">All (<span id="status-count-all">205</span>)</button>
+          <button class="status-pill" data-status="un_member">UN Members (<span id="status-count-un">193</span>)</button>
+          <button class="status-pill" data-status="observer">Observers (2)</button>
+          <button class="status-pill" data-status="limited">Limited Recognition (10)</button>
+        </div>
+
+        <div class="sort-selector">
+          <label for="sort-select">Sort by:</label>
+          <select id="sort-select">
+            <option value="name-asc">Name (A → Z)</option>
+            <option value="name-desc">Name (Z → A)</option>
+            <option value="year-asc">Establishment (Oldest First)</option>
+            <option value="year-desc">Establishment (Newest First)</option>
+            <option value="pop-desc">Population (Highest First)</option>
+            <option value="area-desc">Area (Largest First)</option>
+          </select>
+        </div>
+
+        <button class="btn-action" id="btn-shuffle" title="Shuffle flashcards randomly">
+          <span>🎲</span> Shuffle
+        </button>
+      </div>
+
+      <!-- ANTARCTICA SPECIAL CALLOUT (Revealed when Antarctica selected) -->
+      <div id="antarctica-banner" class="antarctica-banner hidden">
+        <div class="antarctica-banner-inner">
+          <span class="antarctica-icon">❄️</span>
+          <div class="antarctica-text">
+            <h3>Antarctica: The Antarctic Treaty System</h3>
+            <p>Antarctica has <strong>no permanent sovereign countries or indigenous population</strong>. It is regulated by the international <strong>Antarctic Treaty System (1959)</strong>, which designates the continent as a scientific preserve, prohibits military activity, and freezes territorial claims. It hosts ~1,000 to 5,000 seasonal researchers across dozens of multinational stations.</p>
+            <p class="antarctica-sub">Antarctica also features <strong>Don Juan Pond</strong>, Earth's saltiest body of water (&gt;44% salinity), located in the McMurdo Dry Valleys.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- RESULTS SUMMARY INFO -->
+      <div class="results-meta-bar">
+        <span id="results-count">Showing 205 countries</span>
+        <span class="results-hint">💡 Tip: Click card to <strong>flip it</strong> or press <strong>Details</strong> for full overview with interactive map.</span>
+      </div>
+
+      <!-- FLASHCARDS CONTAINER GRID -->
+      <div class="cards-grid" id="countries-grid">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+
+      <!-- EMPTY STATE -->
+      <div id="no-results" class="no-results hidden">
+        <span class="empty-icon">🔎</span>
+        <h3>No countries match your search or filter</h3>
+        <p>Try resetting the search bar or choosing another continent.</p>
+        <button class="btn-reset" id="btn-reset-filters">Reset All Filters</button>
+      </div>
+    </section>
+
+    <!-- VIEW 2: INTERACTIVE WORLD MAP VIEW -->
+    <section id="view-map" class="view-panel">
+      <div class="map-view-header">
+        <div class="map-header-info">
+          <h2>🗺️ Dev World Map: Interactive Spatial Visuals</h2>
+          <p>Explore all <strong>205 sovereign nations and territories</strong> across the globe with interactive spatial pins. Click any country marker to view instant geopolitical metrics and inspect its flashcard.</p>
+        </div>
+
+        <div class="map-controls-group">
+          <!-- MAP STYLE SWITCHER (Dark Canvas, Light Canvas, Satellite) -->
+          <div class="map-style-switcher" role="group" aria-label="Map style layers">
+            <button type="button" class="map-style-btn active" data-map-style="dark" id="map-style-dark" title="High-contrast Dark Canvas">🌙 Dark Canvas</button>
+            <button type="button" class="map-style-btn" data-map-style="light" id="map-style-light" title="Clean Light Canvas">☀️ Light Canvas</button>
+            <button type="button" class="map-style-btn" data-map-style="satellite" id="map-style-satellite" title="Satellite Photorealistic View">🛰️ Satellite</button>
+          </div>
+
+          <div class="map-legend">
+            <span class="legend-item"><span class="legend-dot un"></span> UN Member (193)</span>
+            <span class="legend-item"><span class="legend-dot observer"></span> Observer (2)</span>
+            <span class="legend-item"><span class="legend-dot limited"></span> Limited / De Facto (10)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAP CONTAINER -->
+      <div class="world-map-wrapper">
+        <div id="world-map" class="world-map-canvas"></div>
+      </div>
+    </section>
+
+    <!-- VIEW 3: OCEANS & SALTWATER BODIES -->
+    <section id="view-waterbodies" class="view-panel">
+      <div class="waterbodies-hero">
+        <div class="hero-text">
+          <h2>Earth's Hydrosphere: Oceans, Marginal Seas & Hypersaline Lakes</h2>
+          <p>Over <strong>71% of Earth's surface</strong> is covered in water, and <strong>96.5% of all Earth's water is saline</strong> (salty). Explore the 5 global oceans, vital marginal seas, and extreme inland salt lakes.</p>
+        </div>
+
+        <div class="salinity-reference-card">
+          <h4>🧪 Salinity Reference Scale</h4>
+          <div class="salinity-gradient-bar">
+            <span class="point fresh">Freshwater &lt;0.05%</span>
+            <span class="point brackish">Baltic Sea ~0.8%</span>
+            <span class="point ocean">World Oceans ~3.5%</span>
+            <span class="point hypersaline">Dead Sea ~34%</span>
+            <span class="point extreme">Don Juan Pond &gt;44%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- WATER BODY FILTER BUTTONS -->
+      <div class="water-filter-buttons">
+        <button class="water-btn active" data-watertype="all">🌊 All Water Bodies (<span id="wb-count-all">23</span>)</button>
+        <button class="water-btn" data-watertype="ocean">🌐 The 5 World Oceans</button>
+        <button class="water-btn" data-watertype="sea">⛵ Major Marginal Seas & Gulfs (12)</button>
+        <button class="water-btn" data-watertype="salt_lake">🧂 Endorheic Salt Seas & Hypersaline Lakes (6)</button>
+      </div>
+
+      <!-- WATER BODIES GRID -->
+      <div class="water-cards-grid" id="waterbodies-grid">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+    </section>
+
+    <!-- VIEW 4: STUDY & QUIZ MODE (456 QUESTIONS ACROSS 228 PORTIONS) -->
+    <section id="view-quiz" class="view-panel">
+      <div class="quiz-container">
+        <div class="quiz-header-bar">
+          <div class="quiz-title-area">
+            <h2>🎯 Study & Knowledge Quiz</h2>
+            <p>Master global geopolitics and marine hydrography across <strong>456 creative multiple-choice questions</strong> spanning all 205 sovereign nations &amp; territories and 23 world oceans &amp; salt seas (2 questions per entity). Filter by category, test by continent, or challenge yourself with the full global quiz!</p>
+          </div>
+
+          <!-- Quick Stats / Score Ticker -->
+          <div class="quiz-scoreboard">
+            <div class="score-card">
+              <span class="score-label">🎯 Progress</span>
+              <span class="score-val"><strong id="quiz-current-num">1</strong> / <span id="quiz-total-num">456</span></span>
+            </div>
+            <div class="score-card">
+              <span class="score-label">🏆 Score</span>
+              <span class="score-val"><strong id="quiz-score-val">0</strong> / <span id="quiz-answered-count">0</span></span>
+            </div>
+            <div class="score-card">
+              <span class="score-label">🔥 Streak</span>
+              <span class="score-val"><strong id="quiz-streak-val">0</strong></span>
+            </div>
+            <div class="score-card">
+              <span class="score-label">📊 Accuracy</span>
+              <span class="score-val" id="quiz-accuracy-val">0%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CATEGORY & CONTINENT FILTER BUTTONS -->
+        <div class="quiz-category-nav">
+          <div class="quiz-filter-group" role="group" aria-label="Quiz categories">
+            <button type="button" class="quiz-cat-btn active" data-quiz-filter="all">
+              <span>🎯 All Questions</span>
+              <span class="cat-count" id="quiz-count-all">456</span>
+            </button>
+            <button type="button" class="quiz-cat-btn" data-quiz-filter="countries">
+              <span>🌐 Countries &amp; Territories</span>
+              <span class="cat-count">410</span>
+            </button>
+            <button type="button" class="quiz-cat-btn" data-quiz-filter="waterbodies">
+              <span>🌊 Oceans &amp; Salt Seas</span>
+              <span class="cat-count">46</span>
+            </button>
+          </div>
+
+          <div class="quiz-continent-filter-group" role="group" aria-label="Filter by continent">
+            <span class="filter-sub-label">By Region:</span>
+            <button type="button" class="quiz-sub-btn" data-quiz-region="Africa">🌍 Africa (112)</button>
+            <button type="button" class="quiz-sub-btn" data-quiz-region="Asia">🌏 Asia (98)</button>
+            <button type="button" class="quiz-sub-btn" data-quiz-region="Europe">🏰 Europe (98)</button>
+            <button type="button" class="quiz-sub-btn" data-quiz-region="North America">🗽 North America (46)</button>
+            <button type="button" class="quiz-sub-btn" data-quiz-region="South America">🏔️ South America (24)</button>
+            <button type="button" class="quiz-sub-btn" data-quiz-region="Oceania">🏝️ Oceania (32)</button>
+            <button type="button" class="quiz-sub-btn" data-quiz-region="Oceans & Salt Seas">🌊 Oceans (46)</button>
+          </div>
+        </div>
+
+        <!-- MAIN INTERACTIVE QUIZ CARD STAGE -->
+        <div class="quiz-stage-wrapper">
+          <div class="quiz-interactive-card" id="quiz-interactive-card">
+            
+            <!-- Question Top Meta -->
+            <div class="q-card-top-bar">
+              <div class="q-meta-badges">
+                <span class="q-cat-badge" id="q-category-badge">🌐 Countries &amp; Territories</span>
+                <span class="q-region-badge" id="q-region-badge">Africa</span>
+                <span class="q-type-badge" id="q-type-badge">Culture, History &amp; Geography</span>
+              </div>
+              <div class="q-portion-indicator" id="q-portion-indicator">
+                Portion #1 of 228 • Question 1 of 2
+              </div>
+            </div>
+
+            <!-- Question Text -->
+            <div class="q-prompt-box">
+              <h3 class="q-text" id="q-text">Loading question...</h3>
+            </div>
+
+            <!-- 4 Multiple Choice Options (A, B, C, D) -->
+            <div class="q-options-grid" id="q-options-container" role="radiogroup" aria-label="Question choices">
+              <!-- Rendered dynamically by app.js: 4 option buttons -->
+            </div>
+
+            <!-- Educational Explanation Box (revealed upon selection) -->
+            <div class="q-explanation-box hidden" id="q-explanation-box">
+              <div class="explanation-header">
+                <span class="exp-icon" id="exp-status-icon">💡</span>
+                <strong class="exp-title" id="exp-status-title">Fact Insight:</strong>
+              </div>
+              <p class="exp-text" id="exp-text">-</p>
+            </div>
+
+            <!-- Quiz Navigation Toolbar -->
+            <div class="q-nav-toolbar">
+              <div class="q-nav-left">
+                <button type="button" class="btn-q-nav" id="btn-quiz-prev" title="Previous Question">
+                  <span>⬅</span> Previous
+                </button>
+                <button type="button" class="btn-q-nav" id="btn-quiz-next" title="Next Question">
+                  Next <span>➡</span>
+                </button>
+              </div>
+
+              <div class="q-nav-center">
+                <button type="button" class="btn-q-action secondary" id="btn-quiz-random" title="Jump to a Random Question">
+                  <span>🎲</span> Random Question
+                </button>
+                <button type="button" class="btn-q-action secondary" id="btn-quiz-shuffle" title="Shuffle Questions in this Category">
+                  <span>🔀</span> Shuffle All
+                </button>
+              </div>
+
+              <div class="q-nav-right">
+                <button type="button" class="btn-q-action reset" id="btn-quiz-reset-score" title="Reset your Score">
+                  <span>🔄</span> Reset Score
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- COUNTRY DETAIL MODAL WITH INTERACTIVE MAP -->
+  <div id="detail-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-dialog">
+      <button class="modal-close-btn" id="modal-close" aria-label="Close dialog">✕</button>
+      <div class="modal-header">
+        <div class="modal-flag-wrap">
+          <img id="modal-flag-img" class="modal-flag" src="" alt="National Flag">
+          <span id="modal-flag-fallback" class="modal-flag-emoji">🏳️</span>
+        </div>
+        <div class="modal-title-block">
+          <div class="modal-badges">
+            <span class="status-badge" id="modal-status-badge">UN Member State</span>
+            <span class="continent-badge" id="modal-continent-badge">Asia</span>
+          </div>
+          <h2 id="modal-title">Country Name</h2>
+          <p id="modal-official-name" class="modal-subtitle">Official Country Name</p>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <!-- INTERACTIVE MINI-MAP IN MODAL -->
+        <div class="modal-section map-section">
+          <h3>📍 Geographical Location Map</h3>
+          <div class="modal-map-wrap">
+            <div id="modal-country-map" class="modal-country-map"></div>
+          </div>
+          <div class="modal-coords-bar">
+            <span>Coordinates: <strong id="modal-coords-val">0°, 0°</strong></span>
+            <span id="modal-location-snippet" class="location-snippet">Location details</span>
+          </div>
+        </div>
+
+        <div class="modal-grid-stats">
+          <div class="modal-stat-card">
+            <span class="card-stat-icon">🏛️</span>
+            <div class="stat-info">
+              <span class="stat-title">Capital City</span>
+              <strong id="modal-capital">-</strong>
+            </div>
+          </div>
+
+          <div class="modal-stat-card">
+            <span class="card-stat-icon">🪙</span>
+            <div class="stat-info">
+              <span class="stat-title">Official Currency</span>
+              <strong id="modal-currency">-</strong>
+            </div>
+          </div>
+
+          <div class="modal-stat-card">
+            <span class="card-stat-icon">📅</span>
+            <div class="stat-info">
+              <span class="stat-title">Established / Independence</span>
+              <strong id="modal-established">-</strong>
+            </div>
+          </div>
+
+          <div class="modal-stat-card">
+            <span class="card-stat-icon">🇺🇳</span>
+            <div class="stat-info">
+              <span class="stat-title">UN Admission Year</span>
+              <strong id="modal-un-year">-</strong>
+            </div>
+          </div>
+
+          <div class="modal-stat-card">
+            <span class="card-stat-icon">👥</span>
+            <div class="stat-info">
+              <span class="stat-title">Estimated Population</span>
+              <strong id="modal-population">-</strong>
+            </div>
+          </div>
+
+          <div class="modal-stat-card">
+            <span class="card-stat-icon">📐</span>
+            <div class="stat-info">
+              <span class="stat-title">Total Land Area</span>
+              <strong id="modal-area">-</strong>
+            </div>
+          </div>
+
+          <div class="modal-stat-card">
+            <span class="card-stat-icon">📞</span>
+            <div class="stat-info">
+              <span class="stat-title">Telephone Calling Code</span>
+              <strong id="modal-calling-code">-</strong>
+            </div>
+          </div>
+
+          <div class="modal-stat-card">
+            <span class="card-stat-icon">🌐</span>
+            <div class="stat-info">
+              <span class="stat-title">Internet Domain Code</span>
+              <strong id="modal-tld">-</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-section highlight-box">
+          <h3>✨ Historical & Cultural Highlight</h3>
+          <p id="modal-funfact" class="fact-text">-</p>
+        </div>
+
+        <div class="modal-footer-actions">
+          <a id="modal-link-maps" href="#" target="_blank" rel="noopener noreferrer" class="external-link-btn">
+            🗺️ Open Google Maps ↗
+          </a>
+          <a id="modal-link-wiki" href="#" target="_blank" rel="noopener noreferrer" class="external-link-btn secondary">
+            📖 Wikipedia Article ↗
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- APPLICATION FOOTER -->
+  <footer class="app-footer">
+    <div class="footer-container">
+      <div class="footer-col">
+        <h4>🗺️ Dev World Map</h4>
+        <p>A high-performance interactive atlas and geospatial explorer for sovereign nations, UN membership classifications, world oceans, and global hydrography.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Geopolitical Standards</h4>
+        <p>Data based on the <strong>United Nations Protocol and Liaison Service</strong>, <strong>ISO-3166-1 Country Codes</strong>, and the <strong>International Hydrographic Organization (IHO)</strong>.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Global Catalog</h4>
+        <p>• 193 UN Member Sovereign States<br>• 2 UN Permanent Observer States<br>• 10 De Facto / Associated States<br>• 5 World Oceans &amp; 18+ Saline Seas</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Dev World Map • Built with HTML5, CSS3, Pure JavaScript, and Leaflet Maps.</p>
+    </div>
+  </footer>
+  </div> <!-- /#main-app -->
+
+  <!-- LEAFLET JS FOR MAP VISUALS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <!-- DATASETS AND LOGIC -->
+  <script src="js/countries-data.js"></script>
+  <script src="js/waterbodies-data.js"></script>
+  <script src="js/quiz-data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
